@@ -14,28 +14,6 @@
 #include <dt-bindings/zmk/pointing.h>
 
 / {
-  macros {
-    f_hyper_hold: f_hyper_hold {
-      compatible = "zmk,behavior-macro";
-      #binding-cells = <0>;
-      bindings = <
-        &macro_press &kp LCTRL &kp LSHFT &kp LGUI &kp LALT
-        &macro_pause_for_release
-        &macro_release &kp LALT &kp LGUI &kp LSHFT &kp LCTRL
-      >;
-    };
-  };
-
-  behaviors {
-    f_hyper: f_hyper {
-      compatible = "zmk,behavior-hold-tap";
-      #binding-cells = <0>;
-      tapping-term-ms = <U_TAPPING_TERM>;
-      flavor = "tap-preferred";
-      bindings = <&f_hyper_hold>, <&kp F>;
-    };
-  };
-
   keymap {
     compatible = "zmk,keymap";
 #define MIRYOKU_X(LAYER, STRING) \
