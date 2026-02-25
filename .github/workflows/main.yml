@@ -319,6 +319,32 @@ jobs:
           west $west_debug zephyr-export
           echo "::endgroup::"
 
+          echo "::group::board dedupe"
+          # Work around duplicate pillbug board definitions that can be pulled
+          # from modules and break all board resolution in Zephyr.
+          pillbug_defs="$(find "${GITHUB_WORKSPACE}/zmk" -path '*/boards/*/pillbug/board.yml' -type f)"
+          if [ -n "$pillbug_defs" ]
+          then
+            pillbug_count="$(echo "$pillbug_defs" | wc -l | tr -d ' ')"
+            if [ "$pillbug_count" -gt 1 ]
+            then
+              echo "Detected duplicate pillbug board definitions:"
+              echo "$pillbug_defs"
+              printf '%s\n' "$pillbug_defs" | while IFS= read -r board_yml
+              do
+                case "$board_yml" in
+                  */zmk/app/boards/mechwild/pillbug/board.yml ) ;;
+                  * )
+                    duplicate_dir="$(dirname "$board_yml")"
+                    echo "Removing duplicate board dir: $duplicate_dir"
+                    rm -rf "$duplicate_dir"
+                    ;;
+                esac
+              done
+            fi
+          fi
+          echo "::endgroup::"
+
           echo "::group::build"
           log='build.log'
           build_failed_message='::error::Build failed with exit code'
