@@ -330,7 +330,7 @@ jobs:
             then
               echo "Detected duplicate pillbug board definitions:"
               echo "$pillbug_defs"
-              while IFS= read -r board_yml
+              printf '%s\n' "$pillbug_defs" | while IFS= read -r board_yml
               do
                 case "$board_yml" in
                   */zmk/app/boards/mechwild/pillbug/board.yml ) ;;
@@ -340,9 +340,7 @@ jobs:
                     rm -rf "$duplicate_dir"
                     ;;
                 esac
-              done <<EOF
-$pillbug_defs
-EOF
+              done
             fi
           fi
           echo "::endgroup::"
