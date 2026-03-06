@@ -7,7 +7,6 @@
 #define THUMBS 30 31 32 33 34 35
 
 // 2. urob's "Timeless" behaviors
-// We put these in the 'ZMK_BEHAVIORS' node via the Miryoku kludge
 #define MIRYOKU_KLUDGE_TAP_P \
     hml: homrow_mods_left { \
         compatible = "zmk,behavior-hold-tap"; \
@@ -32,26 +31,7 @@
         hold-trigger-on-release; \
     };
 
-// 3. The "Glue" Logic
-// Miryoku uses U_MT(MOD, TAP). We need to map it to our hml/hmr.
-// Because Miryoku uses a single macro for all HRMs, we use a helper
-// that urob uses to choose the behavior based on the key position.
-#define U_MT(MOD, TAP) &u_mt MOD TAP
-
-// This is the tricky part. For Miryoku to not crash, u_mt must
-// accept exactly two arguments and return a single behavior.
-#define u_mt(mod, tap) &hml mod tap
-
-
-// Redefine the mapping so Left keys use hml and Right keys use hmr
-#undef MIRYOKU_LAYOUT_MAPPING
-#define MIRYOKU_LAYOUT_MAPPING( \
-    K00, K01, K02, K03, K04,      K05, K06, K07, K08, K09, \
-    K10, K11, K12, K13, K14,      K15, K16, K17, K18, K19, \
-    K20, K21, K22, K23, K24,      K25, K26, K27, K28, K29, \
-    N30, N31, K32, K33, K34,      K35, K36, K37, N38, N39 \
-) \
-K00, K01, K02, K03, K04,      K05, K06, K07, K08, K09, \
-K10, K11, K12, K13, K14,      K15, K16, K17, K18, K19, \
-K20, K21, K22, K23, K24,      K25, K26, K27, K28, K29, \
-          K32, K33, K34,      K35, K36, K37
+// 3. The Fix for the "2 arguments" error
+// Miryoku uses U_MT(MOD, TAP). This redirection is cleaner:
+#define U_MT(MOD, TAP) &u_mt_helper MOD TAP
+#define u_mt_helper(MOD, TAP) &hml MOD TAP
