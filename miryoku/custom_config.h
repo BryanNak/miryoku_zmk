@@ -1,13 +1,13 @@
 // Copyright 2021 Manna Harbour
 // https://github.com/manna-harbour/miryoku
-
-// 1. Define Key Positions for a 36-key Corne (3x5+3)
+//
+// 1. Define Key Positions for 36-key Corne
 #define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24
 #define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29
 #define THUMBS 30 31 32 33 34 35
 
-// 2. urob's "Timeless" behaviors
-#define MIRYOKU_KLUDGE_TAP_P \
+// 2. Inject urob's "Timeless" behaviors
+#define MIRYOKU_KLUDGE_BEHAVIORS_P \
     hml: homrow_mods_left { \
         compatible = "zmk,behavior-hold-tap"; \
         #binding-cells = <2>; \
@@ -31,7 +31,10 @@
         hold-trigger-on-release; \
     };
 
-// 3. The Fix for the "2 arguments" error
-// Miryoku uses U_MT(MOD, TAP). This redirection is cleaner:
-#define U_MT(MOD, TAP) &u_mt_helper MOD TAP
-#define u_mt_helper(MOD, TAP) &hml MOD TAP
+// 3. Overwrite the Base Layer to use the new behaviors
+// This bypasses the U_MT macro entirely to prevent the "2 arguments" error
+#define MIRYOKU_LAYER_BASE \
+&kp Q,             &kp W,             &kp E,             &kp R,             &kp T,             &kp Y,             &kp U,             &kp I,             &kp O,             &kp P,             \
+&hml LGUI A,       &hml LALT S,       &hml LCTRL D,      &hml LSHFT F,      &kp G,             &kp H,             &hmr LSHFT J,      &hmr LCTRL K,      &hmr LALT L,       &hmr LGUI SEMI,    \
+&kp Z,             &kp X,             &kp C,             &kp V,             &kp B,             &kp N,             &kp M,             &kp COMMA,         &kp DOT,           &kp SLASH,         \
+U_NP,              U_NP,              U_LT(U_MEDIA, ESC),U_LT(U_NAV, SPACE),U_LT(U_MOUSE, TAB),U_LT(U_SYM, RET), U_LT(U_NUM, BSPC), U_LT(U_FUN, DEL),  U_NP,              U_NP
